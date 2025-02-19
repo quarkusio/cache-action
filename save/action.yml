@@ -1,0 +1,27 @@
+name: 'Save cache'
+description: 'Save cache using either GitHub cache or Runs-On cache'
+inputs:
+  path:
+    description: 'Path'
+    required: true
+  key:
+    description: 'Key'
+    required: true
+  runs-on:
+    description: 'Whether running on Runs-On'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Save cache using GitHub cache
+      uses: actions/cache/save@v4
+      if: ${{ inputs.runs-on != 'true' }}
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
+    - name: Save cache using Runs-On cache
+      uses: runs-on/cache/save@v4
+      if: ${{ inputs.runs-on == 'true' }}
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}

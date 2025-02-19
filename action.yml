@@ -1,0 +1,32 @@
+name: 'Cache'
+description: 'Cache using either GitHub cache or Runs-On cache'
+inputs:
+  path:
+    description: 'Path'
+    required: true
+  key:
+    description: 'Key'
+    required: true
+  restore-keys:
+    description: 'Restore keys'
+    required: false
+  runs-on:
+    description: 'Whether running on Runs-On'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Cache using GitHub cache
+      uses: actions/cache@v4
+      if: ${{ inputs.runs-on != 'true' }}
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
+    - name: Cache using Runs-On cache
+      uses: runs-on/cache@v4
+      if: ${{ inputs.runs-on == 'true' }}
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
